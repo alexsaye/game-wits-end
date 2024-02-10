@@ -29,7 +29,7 @@
                     "id": "1673ef75-bcb2-43a3-90e7-8a957a1a2e73",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "initialStateCheck": false
                 },
                 {
@@ -107,23 +107,23 @@
                 },
                 {
                     "name": "",
-                    "id": "9e1549bd-06f2-4e70-b2bd-d0ae0382479a",
-                    "path": "<Gamepad>/buttonSouth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Dodge",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "3e707f01-bebd-4dd0-b279-18d19012b348",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "Press(behavior=2)",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Ranged Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9e1549bd-06f2-4e70-b2bd-d0ae0382479a",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Dodge",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

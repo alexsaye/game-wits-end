@@ -1,11 +1,18 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMove : MonoBehaviour
 {
     private Rigidbody rb;
+
+    public bool IsDodging => dodgeTimer > 0f;
+
+    private bool HasControl => true;
+
+    [Header("Move")]
 
     private Vector2 moveInput;
 
@@ -15,6 +22,18 @@ public class PlayerMove : MonoBehaviour
     [SerializeField]
     private float moveAcceleration = 100f;
 
+    [Header("Dodge")]
+
+    private bool dodgeInput;
+
+    [SerializeField]
+    private float dodgeSpeed = 10f;
+
+    [SerializeField]
+    private float dodgeCooldown = 1f;
+
+    private float dodgeTimer = 0f;
+
     protected void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -22,7 +41,18 @@ public class PlayerMove : MonoBehaviour
 
     protected void FixedUpdate()
     {
-        if (moveInput != Vector2.zero)
+        UpdateMove();
+        UpdateDodge();
+    }
+
+    protected void OnMove(InputValue value)
+    {
+        moveInput = value.Get<Vector2>();
+    }
+
+    private void UpdateMove()
+    {
+        if (moveInput != Vector2.zero && HasControl)
         {
             // Calculate the input velocity relative to the camera through the player's transverse (xz) plane.
             var forward = new Vector3(Camera.main.transform.forward.x, 0f, Camera.main.transform.forward.z).normalized * moveInput.y;
@@ -46,11 +76,32 @@ public class PlayerMove : MonoBehaviour
 
             // Set the velocity to the transferse velocity, plus the extra move velocity, with unchanged vertical velocity.
             rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z);
+
+            // Face the direction moved in.
+            transform.forward = moveVelocity.normalized;
         }
     }
 
-    protected void OnMove(InputValue value)
+    protected void OnDodge(InputValue value)
     {
-        moveInput = value.Get<Vector2>();
+        dodgeInput = value.isPressed;
+    }
+
+    private void UpdateDodge()
+    {
+        if (IsDodging)
+        {
+            // Tick down the dodge timer.
+            Debug.Log($"Dodging: {dodgeTimer} seconds left.");
+            dodgeTimer -= Time.fixedDeltaTime;
+        }
+        else if (dodgeInput && HasControl)
+        {
+            // Perform a dodge by setting velocity instantly in the faced direction.
+            rb.velocity = transform.forward * dodgeSpeed;
+
+            // Start the dodge timer, disallowing movement until it has expired.
+            dodgeTimer = dodgeCooldown;
+        }
     }
 }
